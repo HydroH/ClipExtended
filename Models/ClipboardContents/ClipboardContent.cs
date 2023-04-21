@@ -9,5 +9,6 @@ namespace ClipExtended.Models.ClipboardContents
 {
     public abstract class ClipboardContent: ObservableObject
     {
+        public abstract void SetClipboardContent();
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace ClipExtended.Models.ClipboardContents
 {
@@ -15,6 +16,13 @@ namespace ClipExtended.Models.ClipboardContents
         public TextClipboardContent(string text)
         {
             this.text = text;
+        }
+
+        public override void SetClipboardContent()
+        {
+            var package = new DataPackage();
+            package.SetText(Text);
+            Clipboard.SetContent(package);
         }
     }
 }

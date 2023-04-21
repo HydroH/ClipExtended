@@ -11,9 +11,6 @@
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Controls\ClipboardItem.xaml" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -76,5 +73,13 @@
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Remove="Package.appxmanifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Controls\ClipboardItemControl.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\ClipboardItemControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>
