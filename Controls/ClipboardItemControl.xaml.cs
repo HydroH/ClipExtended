@@ -39,7 +39,11 @@ namespace ClipExtended.Controls
         public ClipboardItemControl()
         {
             this.InitializeComponent();
-            clipboardItemButton.Click += PasteClick;
+        }
+
+        private void ClipboardItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            PasteClick(sender, e);
         }
     }
 }

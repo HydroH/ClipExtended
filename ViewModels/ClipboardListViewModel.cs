@@ -30,22 +30,16 @@ namespace ClipExtended.ViewModels
         
         public async Task AddData(DataPackageView data)
         {
-            try
+            if (data.Contains(StandardDataFormats.Text))
             {
-                if (data.Contains(StandardDataFormats.Text))
-                {
-                    string text = await data.GetTextAsync();
-                    Items.Add(new TextClipboardContent(text));
-                }
-            } catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                Debug.WriteLine(ex.StackTrace);
+                string text = await data.GetTextAsync();
+                Items.Add(new TextClipboardContent(text));
             }
         }
 
         public void Paste(ClipboardContent item)
         {
+            this.Remove(item);
             item.SetClipboardContent();
 
             var ctrl = new InjectedInputKeyboardInfo();

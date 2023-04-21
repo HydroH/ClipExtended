@@ -11,7 +11,8 @@
     mc:Ignorable="d"
     x:Name="clipboardItemControl">
 
-    <Button x:Name="clipboardItemButton">
+    <Button x:Name="clipboardItemButton"
+            Click="ClipboardItemButton_Click">
         <ContentPresenter Content="{Binding InnerContent, ElementName=clipboardItemControl}"/>
     </Button>
 </UserControl>
