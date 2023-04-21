@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
@@ -53,9 +53,17 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Controls\ClipboardItem.xaml">
+    <EmbeddedResource Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </Page>
+      <XamlRuntime>WinUI</XamlRuntime>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Package.appxmanifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Remove="App.xaml" />
+    <Resource Update="App.xaml">
+      <XamlRuntime>WinUI</XamlRuntime>
+    </Resource>
   </ItemGroup>
 
   <!-- 
@@ -66,4 +74,7 @@
   <PropertyGroup Condition="'$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
   </PropertyGroup>
+  <ItemGroup>
+    <AppxManifest Remove="Package.appxmanifest" />
+  </ItemGroup>
 </Project>

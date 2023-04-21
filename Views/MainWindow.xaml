@@ -2,10 +2,9 @@
 <!-- Licensed under the MIT License. -->
 
 <Window
-    x:Class="ClipExtended.MainWindow"
+    x:Class="ClipExtended.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:ClipExtended.Controls"
     xmlns:viewmodels="using:ClipExtended.ViewModels"
     xmlns:clipboardcontents="using:ClipExtended.Models.ClipboardContents"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

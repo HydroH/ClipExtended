@@ -11,5 +11,10 @@ namespace ClipExtended.Models.ClipboardContents
     {
         [ObservableProperty]
         private string text;
+
+        public TextClipboardContent(string text)
+        {
+            this.text = text;
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace ClipExtended.ViewModels
 {
@@ -21,6 +22,15 @@ namespace ClipExtended.ViewModels
         public void RemoveAt(int index)
         {
             Items.RemoveAt(index);
+        }
+        
+        public async Task AddData(DataPackageView data)
+        {
+            if (data.Contains(StandardDataFormats.Text))
+            {
+                string text = await data.GetTextAsync();
+                Items.Add(new TextClipboardContent(text));
+            }
         }
     }
 }
