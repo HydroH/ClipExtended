@@ -7,30 +7,33 @@ using Microsoft.UI.Xaml.Controls;
 using ClipExtended.Models.ClipboardContents;
 using ClipExtended.Controls;
 using System;
+using System.Drawing;
 using H.NotifyIcon;
 using CommunityToolkit.Mvvm.Input;
 using WinUIEx;
 using Microsoft.UI.Windowing;
 using Windows.Graphics;
-using ClipExtended.Externals;
+using Windows.Win32;
+using Microsoft.UI.Xaml.Input;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace ClipExtended.Views
 {
-    public sealed partial class MainWindow : Window
+    public sealed partial class MainWindow : WinUIEx.WindowEx
     {
-
         public MainWindow()
         {
             this.InitializeComponent();
-            this.SetIsAlwaysOnTop(true);
-            this.SetIsShownInSwitchers(false);
-            this.SetWindowSize(300f, 400f);
-            var presenter = (OverlappedPresenter)this.AppWindow.Presenter;
-            presenter.SetBorderAndTitleBar(true, false);
+            this.IsAlwaysOnTop = true;
+            this.IsShownInSwitchers = false;
+            this.IsTitleBarVisible = false;
+            WindowManager.Get(this).Backdrop = new MicaSystemBackdrop();
 
+            var dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += OnTick;
+            dispatcherTimer.Start();
             this.Activated += this.OnActivated_EventHandler;
             Clipboard.ContentChanged += this.TrackClipboardChanges_EventHandler;
         }
@@ -39,13 +42,13 @@ namespace ClipExtended.Views
         public void ShowWindow()
         {
             this.Show();
-            this.SetForegroundWindow();
+            this.BringToFront();
         }
 
         [RelayCommand]
         public void ExitApplication()
         {
-            trayIcon.Dispose();
+            TrayIcon.Dispose();
             this.Close();
         }
 
@@ -55,12 +58,6 @@ namespace ClipExtended.Views
             {
                 this.Hide();
             }
-        }
-
-        private void StackPanel_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            NativeMethods.ReleaseCapture();
-            NativeMethods.SendMessage(this.GetWindowHandle(), NativeMethods.WM_NCLBUTTONDOWN, NativeMethods.HTCAPTION, 0);
         }
 
         private async void TrackClipboardChanges_EventHandler(object sender, object e)
@@ -73,6 +70,34 @@ namespace ClipExtended.Views
             this.Hide();
             var item = (sender as Button).DataContext;
             ViewModel.Paste(item as ClipboardContent);
+        }
+
+        private int _xWin, _yWin, _xCur, _yCur;
+        private bool _isMoving = false;
+        
+        private void TitleBar_OnPointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            _isMoving = true;
+            _xWin = AppWindow.Position.X;
+            _yWin = AppWindow.Position.Y;
+            PInvoke.GetCursorPos(out Point point);
+            _xCur = point.X;
+            _yCur = point.Y;
+        }
+
+        private void OnTick(object sender, object e)
+        {
+            if (_isMoving)
+            {
+                PInvoke.GetCursorPos(out Point point);
+                AppWindow.Move(new PointInt32(_xWin + point.X - _xCur, _yWin + point.Y - _yCur));
+            }
+        }
+
+        private void TitleBar_OnPointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            _isMoving = false;
+            ((UIElement) sender).ReleasePointerCaptures();
         }
     }
 }

@@ -29,12 +29,12 @@ namespace ClipExtended.Controls
 
         public object InnerContent
         {
-            get { return GetValue(InnerContentProperty); }
-            set { SetValue(InnerContentProperty, value); }
+            get => GetValue(InnerContentProperty);
+            set => SetValue(InnerContentProperty, value);
         }
 
         public static readonly DependencyProperty InnerContentProperty =
-            DependencyProperty.Register("InnerContent", typeof(object), typeof(ClipboardItemControl), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(InnerContent), typeof(object), typeof(ClipboardItemControl), new PropertyMetadata(null));
 
         public ClipboardItemControl()
         {
@@ -43,7 +43,7 @@ namespace ClipExtended.Controls
 
         private void ClipboardItemButton_Click(object sender, RoutedEventArgs e)
         {
-            PasteClick(sender, e);
+            this.PasteClick?.Invoke(sender, e);
         }
     }
 }
