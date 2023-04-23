@@ -18,11 +18,12 @@ namespace ClipExtended.Models.ClipboardContents
             this.text = text;
         }
 
-        public override void SetClipboardContent()
+        public override Task SetClipboardContent()
         {
             var package = new DataPackage();
             package.SetText(Text);
             Clipboard.SetContent(package);
+            return Task.CompletedTask;
         }
     }
 }

@@ -20,6 +20,7 @@ using Windows.Win32.UI.Input.KeyboardAndMouse;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Xaml.Input;
 using System.Runtime.InteropServices;
+using Windows.UI.Input.Preview.Injection;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -30,6 +31,7 @@ namespace ClipExtended.Views
     {
         private IntPtr _prevWndProc;
         private WNDPROC _wndProc;
+        private InputInjector _inputInjector = InputInjector.TryCreate();
 
         public MainWindow()
         {
@@ -89,11 +91,20 @@ namespace ClipExtended.Views
             await ViewModel.AddData(Clipboard.GetContent());
         }
 
-        private void ClipboardItemControl_PasteClick(object sender, RoutedEventArgs e)
+        private async void ClipboardItemControl_PasteClick(object sender, RoutedEventArgs e)
         {
             this.Hide();
             var item = ((Button) sender).DataContext;
-            ViewModel.Paste(item as ClipboardContent);
+            await ViewModel.UpdateClipboard(item as ClipboardContent);
+
+            var ctrl = new InjectedInputKeyboardInfo();
+            ctrl.VirtualKey = (ushort)(VirtualKey.Control);
+            ctrl.KeyOptions = InjectedInputKeyOptions.None;
+
+            var v = new InjectedInputKeyboardInfo();
+            v.VirtualKey = (ushort)(VirtualKey.V);
+            v.KeyOptions = InjectedInputKeyOptions.None;
+            _inputInjector.InjectKeyboardInput(new[] { ctrl, v });
         }
 
         private int _xWin, _yWin, _xCur, _yCur;

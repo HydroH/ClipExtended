@@ -4,10 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 
@@ -16,11 +19,10 @@ namespace ClipExtended.ViewModels
     public partial class ClipboardListViewModel: ObservableObject
     {
         public readonly ObservableCollection<ClipboardContent> Items = new();
-        private InputInjector inputInjector = InputInjector.TryCreate();
 
         public void Add(ClipboardContent item)
         {
-            Items.Add(item);
+            Items.Insert(0, item);
         }
 
         public void Remove(ClipboardContent item)
@@ -32,24 +34,27 @@ namespace ClipExtended.ViewModels
         {
             if (data.Contains(StandardDataFormats.Text))
             {
-                string text = await data.GetTextAsync();
+                var text = await data.GetTextAsync();
                 Items.Add(new TextClipboardContent(text));
+            } else if (data.Contains(StandardDataFormats.Bitmap))
+            {
+                var bitmap = await data.GetBitmapAsync();
+                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("test.png", CreationCollisionOption.GenerateUniqueName);
+                {
+                    using var bitmapStream = await bitmap.OpenReadAsync();
+                    using var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite);
+                    using var inputStream = bitmapStream.AsStreamForRead();
+                    using var outputStream = fileStream.AsStreamForWrite();
+                    await inputStream.CopyToAsync(outputStream);
+                }
+                Items.Add(new ImageClipboardContent(file));
             }
         }
 
-        public void Paste(ClipboardContent item)
+        public async Task UpdateClipboard(ClipboardContent item)
         {
             this.Remove(item);
-            item.SetClipboardContent();
-
-            var ctrl = new InjectedInputKeyboardInfo();
-            ctrl.VirtualKey = (ushort)(VirtualKey.Control);
-            ctrl.KeyOptions = InjectedInputKeyOptions.None;
-
-            var v = new InjectedInputKeyboardInfo();
-            v.VirtualKey = (ushort)(VirtualKey.V);
-            v.KeyOptions = InjectedInputKeyOptions.None;
-            inputInjector.InjectKeyboardInput(new[] { ctrl, v });
+            await item.SetClipboardContent();
         }
     }
 }
