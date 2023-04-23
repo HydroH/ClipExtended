@@ -31,33 +31,36 @@ namespace ClipExtended.Views
             this.IsTitleBarVisible = false;
             WindowManager.Get(this).Backdrop = new MicaSystemBackdrop();
 
-            var dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Tick += OnTick;
-            dispatcherTimer.Start();
-            this.Activated += this.OnActivated_EventHandler;
+            this.Activated += this.OnActivated;
+            this.Closed += this.OnClosed;
             Clipboard.ContentChanged += this.TrackClipboardChanges_EventHandler;
         }
 
+
         [RelayCommand]
-        public void ShowWindow()
+        private void ShowWindow()
         {
             this.Show();
             this.BringToFront();
         }
 
         [RelayCommand]
-        public void ExitApplication()
+        private void ExitApplication()
         {
-            TrayIcon.Dispose();
             this.Close();
         }
 
-        private void OnActivated_EventHandler(object sender, WindowActivatedEventArgs e)
+        private void OnActivated(object sender, WindowActivatedEventArgs e)
         {
             if (e.WindowActivationState == WindowActivationState.Deactivated)
             {
                 this.Hide();
             }
+        }
+        
+        private void OnClosed(object sender, WindowEventArgs args)
+        {
+            TrayIcon.Dispose();
         }
 
         private async void TrackClipboardChanges_EventHandler(object sender, object e)
@@ -68,7 +71,7 @@ namespace ClipExtended.Views
         private void ClipboardItemControl_PasteClick(object sender, RoutedEventArgs e)
         {
             this.Hide();
-            var item = (sender as Button).DataContext;
+            var item = ((Button) sender).DataContext;
             ViewModel.Paste(item as ClipboardContent);
         }
 
@@ -78,6 +81,7 @@ namespace ClipExtended.Views
         private void TitleBar_OnPointerPressed(object sender, PointerRoutedEventArgs e)
         {
             _isMoving = true;
+            ((UIElement) sender).CapturePointer(e.Pointer);
             _xWin = AppWindow.Position.X;
             _yWin = AppWindow.Position.Y;
             PInvoke.GetCursorPos(out Point point);
@@ -85,7 +89,7 @@ namespace ClipExtended.Views
             _yCur = point.Y;
         }
 
-        private void OnTick(object sender, object e)
+        private void TitleBar_OnPointerMoved(object sender, PointerRoutedEventArgs e)
         {
             if (_isMoving)
             {
@@ -97,7 +101,8 @@ namespace ClipExtended.Views
         private void TitleBar_OnPointerReleased(object sender, PointerRoutedEventArgs e)
         {
             _isMoving = false;
-            ((UIElement) sender).ReleasePointerCaptures();
+            ((UIElement) sender).ReleasePointerCapture(e.Pointer);
         }
+
     }
 }

@@ -24,6 +24,7 @@
               Height="24"
               Background="SlateGray"
               PointerPressed="TitleBar_OnPointerPressed"
+              PointerMoved="TitleBar_OnPointerMoved"
               PointerReleased="TitleBar_OnPointerReleased"/>
         
         <tb:TaskbarIcon
