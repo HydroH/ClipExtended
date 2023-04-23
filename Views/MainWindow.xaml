@@ -20,13 +20,9 @@
             <viewmodels:ClipboardListViewModel x:Name="ViewModel" />
         </StackPanel.DataContext>
         
-        <StackPanel.KeyboardAccelerators>
-            <KeyboardAccelerator Key="V" Modifiers="Menu" Invoked="ShowWindow_OnInvoked"/>
-        </StackPanel.KeyboardAccelerators>
-        
         <Grid x:Name="TitleBar" 
               Height="24"
-              Background="SlateGray"
+              Background="Transparent"
               PointerPressed="TitleBar_OnPointerPressed"
               PointerMoved="TitleBar_OnPointerMoved"
               PointerReleased="TitleBar_OnPointerReleased"/>
@@ -50,7 +46,10 @@
                 <DataTemplate x:DataType="clipboardcontents:TextClipboardContent">
                     <controls:ClipboardItemControl
                         PasteClick="ClipboardItemControl_PasteClick">
-                        <TextBlock Text="{x:Bind Text}" />
+                        <TextBlock Text="{x:Bind Text}"
+                                   TextWrapping="Wrap"
+                                   TextTrimming="CharacterEllipsis"
+                                   HorizontalAlignment="Stretch"/>
                     </controls:ClipboardItemControl>
                 </DataTemplate>
 
