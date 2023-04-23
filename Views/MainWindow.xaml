@@ -14,11 +14,15 @@
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   mc:Ignorable="d">
-
+    
     <StackPanel>
         <StackPanel.DataContext>
             <viewmodels:ClipboardListViewModel x:Name="ViewModel" />
         </StackPanel.DataContext>
+        
+        <StackPanel.KeyboardAccelerators>
+            <KeyboardAccelerator Key="V" Modifiers="Menu" Invoked="ShowWindow_OnInvoked"/>
+        </StackPanel.KeyboardAccelerators>
         
         <Grid x:Name="TitleBar" 
               Height="24"

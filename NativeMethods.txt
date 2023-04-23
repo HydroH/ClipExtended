@@ -1,1 +1,6 @@
-﻿GetCursorPos
+﻿RegisterHotKey
+UnregisterHotKey
+SetWindowLongPtr
+CallWindowProc
+WM_*
+GetCursorPos

@@ -13,8 +13,13 @@ using CommunityToolkit.Mvvm.Input;
 using WinUIEx;
 using Microsoft.UI.Windowing;
 using Windows.Graphics;
+using Windows.System;
 using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.Input.KeyboardAndMouse;
+using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Xaml.Input;
+using System.Runtime.InteropServices;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -23,6 +28,9 @@ namespace ClipExtended.Views
 {
     public sealed partial class MainWindow : WinUIEx.WindowEx
     {
+        private IntPtr _prevWndProc;
+        private WNDPROC _wndProc;
+
         public MainWindow()
         {
             this.InitializeComponent();
@@ -33,9 +41,21 @@ namespace ClipExtended.Views
 
             this.Activated += this.OnActivated;
             this.Closed += this.OnClosed;
-            Clipboard.ContentChanged += this.TrackClipboardChanges_EventHandler;
+            Clipboard.ContentChanged += this.OnClipboardChange;
+
+            _wndProc = WndProc;
+            _prevWndProc = PInvoke.SetWindowLongPtr(new HWND(this.GetWindowHandle()), WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(_wndProc));
+            PInvoke.RegisterHotKey(new HWND(this.GetWindowHandle()), 1, HOT_KEY_MODIFIERS.MOD_ALT, (uint) VirtualKey.V);
         }
 
+        private LRESULT WndProc(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam)
+        {
+            if (msg == PInvoke.WM_HOTKEY)
+            {
+                ShowWindow();
+            }
+            return PInvoke.CallWindowProc(Marshal.GetDelegateForFunctionPointer<WNDPROC>(_prevWndProc), new HWND(this.GetWindowHandle()), msg, wParam, lParam);
+        }
 
         [RelayCommand]
         private void ShowWindow()
@@ -57,13 +77,14 @@ namespace ClipExtended.Views
                 this.Hide();
             }
         }
-        
+
         private void OnClosed(object sender, WindowEventArgs args)
         {
+            PInvoke.UnregisterHotKey(new HWND(this.GetWindowHandle()), 1);
             TrayIcon.Dispose();
         }
 
-        private async void TrackClipboardChanges_EventHandler(object sender, object e)
+        private async void OnClipboardChange(object sender, object e)
         {
             await ViewModel.AddData(Clipboard.GetContent());
         }
@@ -77,7 +98,7 @@ namespace ClipExtended.Views
 
         private int _xWin, _yWin, _xCur, _yCur;
         private bool _isMoving = false;
-        
+
         private void TitleBar_OnPointerPressed(object sender, PointerRoutedEventArgs e)
         {
             _isMoving = true;
@@ -104,5 +125,9 @@ namespace ClipExtended.Views
             ((UIElement) sender).ReleasePointerCapture(e.Pointer);
         }
 
+        private void ShowWindow_OnInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+        {
+            ShowWindow();
+        }
     }
 }
