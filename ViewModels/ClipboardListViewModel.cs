@@ -1,26 +1,16 @@
-﻿using ClipExtended.Models.ClipboardContents;
+﻿using ClipExtended.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.System;
-using Windows.UI.Input.Preview.Injection;
 
 namespace ClipExtended.ViewModels
 {
-    public partial class ClipboardListViewModel: ObservableObject
+    public partial class ClipboardListViewModel : ObservableObject
     {
-        public readonly ObservableCollection<ClipboardContents> Items = new();
+        public readonly ObservableCollection<ClipboardItem> Items = new();
 
-        public void Add(ClipboardContents item)
+        public void Add(ClipboardItem item)
         {
             if (Items.Contains(item))
             {
@@ -32,19 +22,19 @@ namespace ClipExtended.ViewModels
             }
         }
 
-        public void Remove(ClipboardContents item)
+        public void Remove(ClipboardItem item)
         {
             Items.Remove(item);
             item.Remove();
         }
-        
+
         public async Task AddData(DataPackageView data)
         {
-            var contents = await ClipboardContents.New(data);
+            var contents = await ClipboardItem.New(data);
             this.Add(contents);
         }
 
-        public async Task UpdateClipboard(ClipboardContents item)
+        public async Task UpdateClipboard(ClipboardItem item)
         {
             await item.UpdateClipboard();
         }

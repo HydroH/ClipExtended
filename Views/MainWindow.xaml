@@ -9,10 +9,10 @@
                   xmlns:winUiEx="using:WinUIEx"
                   xmlns:tb="using:H.NotifyIcon"
                   xmlns:viewmodels="using:ClipExtended.ViewModels"
-                  xmlns:clipboardcontents="using:ClipExtended.Models.ClipboardContents"
                   xmlns:controls="using:ClipExtended.Controls"
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:models="using:ClipExtended.Models"
                   mc:Ignorable="d">
     
     <StackPanel>
@@ -43,9 +43,9 @@
                   SelectionMode="None">
             <ListView.ItemTemplate>
 
-                <DataTemplate x:DataType="clipboardcontents:ClipboardContents">
+                <DataTemplate x:DataType="models:ClipboardItem">
                     <controls:ClipboardItemControl
-                        ClipboardContents="{x:Bind Mode=OneWay}"
+                        ClipboardItem="{x:Bind Mode=OneWay}"
                         PasteClick="ClipboardItemControl_PasteClick"/>
                 </DataTemplate>
 

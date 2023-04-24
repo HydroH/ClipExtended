@@ -1,16 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage.Streams;
-using Windows.Storage;
 
 namespace ClipExtended.Models.ClipboardContents
 {
-    public partial class TextClipboardContent: ClipboardContent
+    public partial class TextClipboardContent : ClipboardContent
     {
         [ObservableProperty]
         private string text;

@@ -1,22 +1,20 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using ClipExtended.Models.ClipboardContents;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 
-namespace ClipExtended.Models.ClipboardContents
+namespace ClipExtended.Models
 {
-    public partial class ClipboardContents: ObservableObject
+    public partial class ClipboardItem : ObservableObject
     {
-        [ObservableProperty]
-        private HtmlClipboardContent html;
+        // [ObservableProperty]
+        // private HtmlClipboardContent html;
 
-        [ObservableProperty]
-        private RtfClipboardContent rtf;
+        // [ObservableProperty]
+        // private RtfClipboardContent rtf;
 
         [ObservableProperty]
         private ImageClipboardContent image;
@@ -24,14 +22,14 @@ namespace ClipExtended.Models.ClipboardContents
         [ObservableProperty]
         private TextClipboardContent text;
 
-        [ObservableProperty]
-        private FileDropListClipboardContent fileDropList;
+        // [ObservableProperty]
+        // private FileDropListClipboardContent fileDropList;
 
-        private ClipboardContents() { }
+        private ClipboardItem() { }
 
-        public async static Task<ClipboardContents> New(DataPackageView data)
+        public static async Task<ClipboardItem> New(DataPackageView data)
         {
-            var contents = new ClipboardContents();
+            var contents = new ClipboardItem();
 
             if (data.Contains(StandardDataFormats.Bitmap))
             {

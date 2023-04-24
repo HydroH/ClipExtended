@@ -1,11 +1,6 @@
-﻿using ClipExtended.Models.ClipboardContents;
-using Microsoft.UI.Xaml.Controls;
+﻿using ClipExtended.Models;
 using Microsoft.UI.Xaml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
 
 namespace ClipExtended.Controls
 {
@@ -16,8 +11,7 @@ namespace ClipExtended.Controls
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
-            var contents = item as ClipboardContents;
-            if (contents == null)
+            if (item is not ClipboardItem contents)
             {
                 return base.SelectTemplateCore(item, container);
             }
@@ -25,7 +19,7 @@ namespace ClipExtended.Controls
             {
                 return Image;
             }
-            if (contents.Text != null) 
+            if (contents.Text != null)
             {
                 return Text;
             }

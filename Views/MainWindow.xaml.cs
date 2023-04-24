@@ -1,26 +1,25 @@
 // Copyright (c) Microsoft Corporation and Contributors.
 // Licensed under the MIT License.
 
-using Windows.ApplicationModel.DataTransfer;
+using ClipExtended.Models;
+using CommunityToolkit.Mvvm.Input;
+using H.NotifyIcon;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using ClipExtended.Models.ClipboardContents;
-using ClipExtended.Controls;
+using Microsoft.UI.Xaml.Input;
 using System;
 using System.Drawing;
-using H.NotifyIcon;
-using CommunityToolkit.Mvvm.Input;
-using WinUIEx;
-using Microsoft.UI.Windowing;
+using System.Runtime.InteropServices;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Graphics;
 using Windows.System;
+using Windows.UI.Input.Preview.Injection;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.Input.KeyboardAndMouse;
 using Windows.Win32.UI.WindowsAndMessaging;
-using Microsoft.UI.Xaml.Input;
-using System.Runtime.InteropServices;
-using Windows.UI.Input.Preview.Injection;
+using WinUIEx;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -47,7 +46,7 @@ namespace ClipExtended.Views
 
             _wndProc = WndProc;
             _prevWndProc = PInvoke.SetWindowLongPtr(new HWND(this.GetWindowHandle()), WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(_wndProc));
-            PInvoke.RegisterHotKey(new HWND(this.GetWindowHandle()), 1, HOT_KEY_MODIFIERS.MOD_ALT, (uint) VirtualKey.V);
+            PInvoke.RegisterHotKey(new HWND(this.GetWindowHandle()), 1, HOT_KEY_MODIFIERS.MOD_ALT, (uint)VirtualKey.V);
         }
 
         private LRESULT WndProc(HWND hWnd, uint msg, WPARAM wParam, LPARAM lParam)
@@ -94,8 +93,8 @@ namespace ClipExtended.Views
         private async void ClipboardItemControl_PasteClick(object sender, RoutedEventArgs e)
         {
             this.Hide();
-            var item = ((Button) sender).DataContext;
-            await ViewModel.UpdateClipboard(item as ClipboardContents);
+            var item = ((Button)sender).DataContext;
+            await ViewModel.UpdateClipboard(item as ClipboardItem);
 
             var ctrl = new InjectedInputKeyboardInfo
             {
@@ -116,7 +115,7 @@ namespace ClipExtended.Views
         private void TitleBar_OnPointerPressed(object sender, PointerRoutedEventArgs e)
         {
             _isMoving = true;
-            ((UIElement) sender).CapturePointer(e.Pointer);
+            ((UIElement)sender).CapturePointer(e.Pointer);
             _xWin = AppWindow.Position.X;
             _yWin = AppWindow.Position.Y;
             PInvoke.GetCursorPos(out Point point);
@@ -136,7 +135,7 @@ namespace ClipExtended.Views
         private void TitleBar_OnPointerReleased(object sender, PointerRoutedEventArgs e)
         {
             _isMoving = false;
-            ((UIElement) sender).ReleasePointerCapture(e.Pointer);
+            ((UIElement)sender).ReleasePointerCapture(e.Pointer);
         }
 
         private void ShowWindow_OnInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
