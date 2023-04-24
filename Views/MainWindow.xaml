@@ -43,14 +43,10 @@
                   SelectionMode="None">
             <ListView.ItemTemplate>
 
-                <DataTemplate x:DataType="clipboardcontents:TextClipboardContent">
+                <DataTemplate x:DataType="clipboardcontents:ClipboardContent">
                     <controls:ClipboardItemControl
-                        PasteClick="ClipboardItemControl_PasteClick">
-                        <TextBlock Text="{x:Bind Text}"
-                                   TextWrapping="Wrap"
-                                   TextTrimming="CharacterEllipsis"
-                                   HorizontalAlignment="Stretch"/>
-                    </controls:ClipboardItemControl>
+                        ClipboardContent="{x:Bind Mode=OneWay}"
+                        PasteClick="ClipboardItemControl_PasteClick"/>
                 </DataTemplate>
 
             </ListView.ItemTemplate>

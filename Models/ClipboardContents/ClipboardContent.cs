@@ -9,9 +9,6 @@ namespace ClipExtended.Models.ClipboardContents
 {
     public abstract class ClipboardContent: ObservableObject
     {
-        public virtual Task SetClipboardContent() 
-        {
-            return Task.CompletedTask;
-        }
+        public abstract Task SetClipboardContent();
     }
 }

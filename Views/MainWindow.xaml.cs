@@ -97,13 +97,16 @@ namespace ClipExtended.Views
             var item = ((Button) sender).DataContext;
             await ViewModel.UpdateClipboard(item as ClipboardContent);
 
-            var ctrl = new InjectedInputKeyboardInfo();
-            ctrl.VirtualKey = (ushort)(VirtualKey.Control);
-            ctrl.KeyOptions = InjectedInputKeyOptions.None;
-
-            var v = new InjectedInputKeyboardInfo();
-            v.VirtualKey = (ushort)(VirtualKey.V);
-            v.KeyOptions = InjectedInputKeyOptions.None;
+            var ctrl = new InjectedInputKeyboardInfo
+            {
+                VirtualKey = (ushort)(VirtualKey.Control),
+                KeyOptions = InjectedInputKeyOptions.None
+            };
+            var v = new InjectedInputKeyboardInfo
+            {
+                VirtualKey = (ushort)(VirtualKey.V),
+                KeyOptions = InjectedInputKeyOptions.None
+            };
             _inputInjector.InjectKeyboardInput(new[] { ctrl, v });
         }
 

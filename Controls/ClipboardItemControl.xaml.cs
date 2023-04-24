@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation and Contributors.
 // Licensed under the MIT License.
 
+using ClipExtended.Models.ClipboardContents;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -22,19 +23,18 @@ using Windows.Foundation.Collections;
 
 namespace ClipExtended.Controls
 {
-    [ContentProperty(Name = "InnerContent")]
     public sealed partial class ClipboardItemControl : UserControl
     {
-        public event RoutedEventHandler PasteClick;
-
-        public object InnerContent
-        {
-            get => GetValue(InnerContentProperty);
-            set => SetValue(InnerContentProperty, value);
+        public ClipboardContent ClipboardContent 
+        { 
+            get => GetValue(ClipboardContentProperty) as ClipboardContent;
+            set => SetValue(ClipboardContentProperty, value);
         }
 
-        public static readonly DependencyProperty InnerContentProperty =
-            DependencyProperty.Register(nameof(InnerContent), typeof(object), typeof(ClipboardItemControl), new PropertyMetadata(null));
+        public static readonly DependencyProperty ClipboardContentProperty =
+            DependencyProperty.Register(nameof(ClipboardContent), typeof(ClipboardContent), typeof(ClipboardItemControl), new PropertyMetadata(null));
+
+        public event RoutedEventHandler PasteClick;
 
         public ClipboardItemControl()
         {
