@@ -13,10 +13,19 @@ namespace ClipExtended.Models.ClipboardContents
     public partial class ClipboardContents: ObservableObject
     {
         [ObservableProperty]
+        private HtmlClipboardContent html;
+
+        [ObservableProperty]
+        private RtfClipboardContent rtf;
+
+        [ObservableProperty]
         private ImageClipboardContent image;
 
         [ObservableProperty]
         private TextClipboardContent text;
+
+        [ObservableProperty]
+        private FileDropListClipboardContent fileDropList;
 
         private ClipboardContents() { }
 
