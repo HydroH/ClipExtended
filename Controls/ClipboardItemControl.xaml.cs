@@ -25,14 +25,14 @@ namespace ClipExtended.Controls
 {
     public sealed partial class ClipboardItemControl : UserControl
     {
-        public ClipboardContent ClipboardContent 
+        public ClipboardContents ClipboardContents
         { 
-            get => GetValue(ClipboardContentProperty) as ClipboardContent;
-            set => SetValue(ClipboardContentProperty, value);
+            get => GetValue(ClipboardContentsProperty) as ClipboardContents;
+            set => SetValue(ClipboardContentsProperty, value);
         }
 
-        public static readonly DependencyProperty ClipboardContentProperty =
-            DependencyProperty.Register(nameof(ClipboardContent), typeof(ClipboardContent), typeof(ClipboardItemControl), new PropertyMetadata(null));
+        public static readonly DependencyProperty ClipboardContentsProperty =
+            DependencyProperty.Register(nameof(ClipboardContents), typeof(ClipboardContents), typeof(ClipboardItemControl), new PropertyMetadata(null));
 
         public event RoutedEventHandler PasteClick;
 

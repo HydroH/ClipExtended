@@ -11,18 +11,23 @@ namespace ClipExtended.Controls
 {
     public class ClipboardTemplateSelector : DataTemplateSelector
     {
-        public DataTemplate Text { get; set; }
         public DataTemplate Image { get; set; }
+        public DataTemplate Text { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
-            if (item is TextClipboardContent)
+            var contents = item as ClipboardContents;
+            if (contents == null)
             {
-                return Text;
+                return base.SelectTemplateCore(item, container);
             }
-            else if (item is ImageClipboardContent)
+            if (contents.Image != null)
             {
                 return Image;
+            }
+            if (contents.Text != null) 
+            {
+                return Text;
             }
             return base.SelectTemplateCore(item, container);
         }

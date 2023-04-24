@@ -43,9 +43,9 @@
                   SelectionMode="None">
             <ListView.ItemTemplate>
 
-                <DataTemplate x:DataType="clipboardcontents:ClipboardContent">
+                <DataTemplate x:DataType="clipboardcontents:ClipboardContents">
                     <controls:ClipboardItemControl
-                        ClipboardContent="{x:Bind Mode=OneWay}"
+                        ClipboardContents="{x:Bind Mode=OneWay}"
                         PasteClick="ClipboardItemControl_PasteClick"/>
                 </DataTemplate>
 

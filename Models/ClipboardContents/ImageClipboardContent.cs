@@ -22,14 +22,23 @@ namespace ClipExtended.Models.ClipboardContents
             this.path = file.Path;
         }
 
-        public override async Task SetClipboardContent()
+        public override async Task<DataPackage> UpdatePackage(DataPackage package)
         {
-            var package = new DataPackage();
             try
             {
                 var file = await StorageFile.GetFileFromPathAsync(Path);
                 package.SetBitmap(RandomAccessStreamReference.CreateFromFile(file));
-                Clipboard.SetContent(package);
+            }
+            catch { }
+            return package;
+        }
+
+        public override async Task Remove()
+        {
+            try
+            {
+                var file = await StorageFile.GetFileFromPathAsync(Path);
+                await file.DeleteAsync();
             }
             catch { }
         }

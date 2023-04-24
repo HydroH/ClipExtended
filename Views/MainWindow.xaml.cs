@@ -95,7 +95,7 @@ namespace ClipExtended.Views
         {
             this.Hide();
             var item = ((Button) sender).DataContext;
-            await ViewModel.UpdateClipboard(item as ClipboardContent);
+            await ViewModel.UpdateClipboard(item as ClipboardContents);
 
             var ctrl = new InjectedInputKeyboardInfo
             {

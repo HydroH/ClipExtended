@@ -18,43 +18,35 @@ namespace ClipExtended.ViewModels
 {
     public partial class ClipboardListViewModel: ObservableObject
     {
-        public readonly ObservableCollection<ClipboardContent> Items = new();
+        public readonly ObservableCollection<ClipboardContents> Items = new();
 
-        public void Add(ClipboardContent item)
+        public void Add(ClipboardContents item)
         {
-            Items.Insert(0, item);
+            if (Items.Contains(item))
+            {
+                Items.Move(Items.IndexOf(item), 0);
+            }
+            else
+            {
+                Items.Insert(0, item);
+            }
         }
 
-        public void Remove(ClipboardContent item)
+        public void Remove(ClipboardContents item)
         {
             Items.Remove(item);
+            item.Remove();
         }
         
         public async Task AddData(DataPackageView data)
         {
-            if (data.Contains(StandardDataFormats.Text))
-            {
-                var text = await data.GetTextAsync();
-                Items.Add(new TextClipboardContent(text));
-            } else if (data.Contains(StandardDataFormats.Bitmap))
-            {
-                var bitmap = await data.GetBitmapAsync();
-                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("test.png", CreationCollisionOption.GenerateUniqueName);
-                {
-                    using var bitmapStream = await bitmap.OpenReadAsync();
-                    using var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite);
-                    using var inputStream = bitmapStream.AsStreamForRead();
-                    using var outputStream = fileStream.AsStreamForWrite();
-                    await inputStream.CopyToAsync(outputStream);
-                }
-                Items.Add(new ImageClipboardContent(file));
-            }
+            var contents = await ClipboardContents.New(data);
+            this.Add(contents);
         }
 
-        public async Task UpdateClipboard(ClipboardContent item)
+        public async Task UpdateClipboard(ClipboardContents item)
         {
-            this.Remove(item);
-            await item.SetClipboardContent();
+            await item.UpdateClipboard();
         }
     }
 }

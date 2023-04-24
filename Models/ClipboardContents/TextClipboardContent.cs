@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage.Streams;
+using Windows.Storage;
 
 namespace ClipExtended.Models.ClipboardContents
 {
@@ -18,12 +20,10 @@ namespace ClipExtended.Models.ClipboardContents
             this.text = text;
         }
 
-        public override Task SetClipboardContent()
+        public override async Task<DataPackage> UpdatePackage(DataPackage package)
         {
-            var package = new DataPackage();
             package.SetText(Text);
-            Clipboard.SetContent(package);
-            return Task.CompletedTask;
+            return package;
         }
     }
 }

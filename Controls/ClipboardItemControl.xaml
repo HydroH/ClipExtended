@@ -17,8 +17,8 @@
     <UserControl.Resources>
         
         <DataTemplate x:Key="TextItemTemplate" 
-                      x:DataType="clipboardcontents:TextClipboardContent">
-            <TextBlock Text="{x:Bind Text}"
+                      x:DataType="clipboardcontents:ClipboardContents">
+            <TextBlock Text="{x:Bind Text.Text}"
                        TextWrapping="Wrap"
                        TextTrimming="CharacterEllipsis"
                        HorizontalAlignment="Stretch"
@@ -26,8 +26,8 @@
         </DataTemplate>
 
         <DataTemplate x:Key="ImageItemTemplate" 
-                      x:DataType="clipboardcontents:ImageClipboardContent">
-            <Image Source="{x:Bind Path}"
+                      x:DataType="clipboardcontents:ClipboardContents">
+            <Image Source="{x:Bind Image.Path}"
                    Height="150"/>
         </DataTemplate>
 
@@ -58,7 +58,7 @@
                               VerticalAlignment="Bottom"/>
             </Grid>
 
-            <ContentControl Content="{Binding ClipboardContent, Mode=OneWay, ElementName=MainControl}"
+            <ContentControl Content="{Binding ClipboardContents, Mode=OneWay, ElementName=MainControl}"
                             ContentTemplateSelector="{StaticResource ClipboardTemplateSelector}"/>
         </controls:DockPanel>
     </Button>
