@@ -1,8 +1,10 @@
 ﻿using ClipExtended.Models.ClipboardContents;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 
@@ -10,26 +12,18 @@ namespace ClipExtended.Models
 {
     public partial class ClipboardItem : ObservableObject
     {
-        // [ObservableProperty]
-        // private HtmlClipboardContent html;
-
-        // [ObservableProperty]
-        // private RtfClipboardContent rtf;
-
         [ObservableProperty]
-        private ImageClipboardContent image;
+        private Dictionary<string, ClipboardContent> contentMap;
 
-        [ObservableProperty]
-        private TextClipboardContent text;
-
-        // [ObservableProperty]
-        // private FileDropListClipboardContent fileDropList;
+        public ImageClipboardContent Image => ContentMap[StandardDataFormats.Bitmap] as ImageClipboardContent;
+        public TextClipboardContent Text => ContentMap[StandardDataFormats.Text] as TextClipboardContent;
 
         private ClipboardItem() { }
 
         public static async Task<ClipboardItem> New(DataPackageView data)
         {
             var contents = new ClipboardItem();
+            var contentMap = new Dictionary<string, ClipboardContent>();
 
             if (data.Contains(StandardDataFormats.Bitmap))
             {
@@ -42,29 +36,53 @@ namespace ClipExtended.Models
                     using var outputStream = fileStream.AsStreamForWrite();
                     await inputStream.CopyToAsync(outputStream);
                 }
-                contents.Image = new ImageClipboardContent(file);
-            }
-            else if (data.Contains(StandardDataFormats.Text))
-            {
-                var text = await data.GetTextAsync();
-                contents.Text = new TextClipboardContent(text);
+                contentMap.Add(StandardDataFormats.Bitmap, new ImageClipboardContent(file));
             }
 
+            if (data.Contains(StandardDataFormats.Html))
+            {
+                var text = await data.GetHtmlFormatAsync();
+                contentMap.Add(StandardDataFormats.Html, new TextClipboardContent(text, StandardDataFormats.Html));
+            }
+
+            if (data.Contains(StandardDataFormats.Rtf))
+            {
+                var text = await data.GetRtfAsync();
+                contentMap.Add(StandardDataFormats.Rtf, new TextClipboardContent(text, StandardDataFormats.Rtf));
+            }
+
+            if (data.Contains(StandardDataFormats.Text))
+            {
+                var text = await data.GetTextAsync();
+                contentMap.Add(StandardDataFormats.Text, new TextClipboardContent(text, StandardDataFormats.Text));
+            }
+
+            if (data.Contains(StandardDataFormats.WebLink))
+            {
+                var uri = await data.GetWebLinkAsync();
+                contentMap.Add(StandardDataFormats.WebLink, new TextClipboardContent(uri.ToString(), StandardDataFormats.WebLink));
+            }
+
+            contents.ContentMap = contentMap;
             return contents;
         }
 
         public async Task UpdateClipboard()
         {
             var package = new DataPackage();
-            package = await Image.UpdatePackage(package);
-            package = await Text.UpdatePackage(package);
+            foreach (ClipboardContent content in ContentMap.Values)
+            {
+                package = await content.UpdatePackage(package);
+            }
             Clipboard.SetContent(package);
         }
 
         public void Remove()
         {
-            _ = Image.Remove();
-            _ = Text.Remove();
+            foreach (ClipboardContent content in ContentMap.Values)
+            {
+                _ = content.Remove();
+            }
         }
     }
 }

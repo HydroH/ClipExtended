@@ -7,17 +7,36 @@ namespace ClipExtended.Models.ClipboardContents
     public partial class TextClipboardContent : ClipboardContent
     {
         [ObservableProperty]
+        private string format;
+
+        [ObservableProperty]
         private string text;
 
-        public TextClipboardContent(string text)
+        public TextClipboardContent(string text, string format)
         {
-            this.text = text;
+            this.Text = text;
+            this.Format = format;
         }
 
-        public override async Task<DataPackage> UpdatePackage(DataPackage package)
+        public override Task<DataPackage> UpdatePackage(DataPackage package)
         {
-            package.SetText(Text);
-            return package;
+            if (Format == StandardDataFormats.Html)
+            {
+                package.SetHtmlFormat(Text);
+            }
+            else if (Format == StandardDataFormats.Rtf)
+            {
+                package.SetRtf(Text);
+            }
+            else if (Format == StandardDataFormats.WebLink)
+            {
+                package.SetWebLink(new System.Uri(Text));
+            }
+            else
+            {
+                package.SetText(Text);
+            }
+            return Task.FromResult(package);
         }
     }
 }

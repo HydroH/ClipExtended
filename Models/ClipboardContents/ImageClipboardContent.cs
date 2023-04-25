@@ -14,7 +14,7 @@ namespace ClipExtended.Models.ClipboardContents
 
         public ImageClipboardContent(StorageFile file)
         {
-            this.path = file.Path;
+            this.Path = file.Path;
         }
 
         public override async Task<DataPackage> UpdatePackage(DataPackage package)

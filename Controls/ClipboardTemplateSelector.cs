@@ -1,6 +1,7 @@
 ﻿using ClipExtended.Models;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace ClipExtended.Controls
 {
@@ -15,11 +16,11 @@ namespace ClipExtended.Controls
             {
                 return base.SelectTemplateCore(item, container);
             }
-            if (contents.Image != null)
+            if (contents.ContentMap.ContainsKey(StandardDataFormats.Bitmap))
             {
                 return Image;
             }
-            if (contents.Text != null)
+            if (contents.ContentMap.ContainsKey(StandardDataFormats.Text))
             {
                 return Text;
             }
