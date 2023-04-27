@@ -44,6 +44,7 @@ namespace ClipExtended.Views
             this.Closed += this.OnClosed;
             Clipboard.ContentChanged += this.OnClipboardChange;
 
+            _ = ViewModel.Load();
             _wndProc = WndProc;
             _prevWndProc = PInvoke.SetWindowLongPtr(new HWND(this.GetWindowHandle()), WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(_wndProc));
             PInvoke.RegisterHotKey(new HWND(this.GetWindowHandle()), 1, HOT_KEY_MODIFIERS.MOD_ALT, (uint)VirtualKey.V);
@@ -79,8 +80,9 @@ namespace ClipExtended.Views
             }
         }
 
-        private void OnClosed(object sender, WindowEventArgs args)
+        private async void OnClosed(object sender, WindowEventArgs args)
         {
+            await ViewModel.Save();
             PInvoke.UnregisterHotKey(new HWND(this.GetWindowHandle()), 1);
             TrayIcon.Dispose();
         }

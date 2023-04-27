@@ -38,5 +38,7 @@ namespace ClipExtended.Models.ClipboardContents
             }
             return Task.FromResult(package);
         }
+
+        public override string ToString() => this.Text;
     }
 }

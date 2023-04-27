@@ -12,9 +12,9 @@ namespace ClipExtended.Models.ClipboardContents
         [ObservableProperty]
         private String path;
 
-        public ImageClipboardContent(StorageFile file)
+        public ImageClipboardContent(string path)
         {
-            this.Path = file.Path;
+            this.Path = path;
         }
 
         public override async Task<DataPackage> UpdatePackage(DataPackage package)
@@ -37,5 +37,7 @@ namespace ClipExtended.Models.ClipboardContents
             }
             catch { }
         }
+
+        public override string ToString() => this.Path;
     }
 }

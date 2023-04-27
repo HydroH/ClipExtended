@@ -1,5 +1,7 @@
 ﻿using ClipExtended.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.WinUI.Helpers;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
@@ -9,6 +11,8 @@ namespace ClipExtended.ViewModels
     public partial class ClipboardListViewModel : ObservableObject
     {
         public readonly ObservableCollection<ClipboardItem> Items = new();
+
+        public ApplicationDataStorageHelper storageHelper = ApplicationDataStorageHelper.GetCurrent();
 
         public void Add(ClipboardItem item)
         {
@@ -37,6 +41,26 @@ namespace ClipExtended.ViewModels
         public async Task UpdateClipboard(ClipboardItem item)
         {
             await item.UpdateClipboard();
+        }
+
+        public async Task Save()
+        {
+            var items = new List<Dictionary<string, string>>();
+            foreach (var item in Items)
+            {
+                items.Add(item.ToMap());
+            }
+            await storageHelper.CreateFileAsync("clipboard.dat", items);
+        }
+
+        public async Task Load()
+        {
+            var items = await storageHelper.ReadFileAsync<List<Dictionary<string, string>>>("clipboard.dat");
+            Items.Clear();
+            foreach (var item in items)
+            {
+                Items.Add(ClipboardItem.New(item));
+            }
         }
     }
 }

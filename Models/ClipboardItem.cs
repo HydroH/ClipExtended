@@ -20,6 +20,26 @@ namespace ClipExtended.Models
 
         private ClipboardItem() { }
 
+        public static ClipboardItem New(Dictionary<string, string> map)
+        {
+            var contents = new ClipboardItem();
+            var contentMap = new Dictionary<string, ClipboardContent>();
+
+            foreach (KeyValuePair<string, string> entry in map)
+            {
+                if (entry.Key == StandardDataFormats.Bitmap)
+                {
+                    contentMap.Add(entry.Key, new ImageClipboardContent(entry.Value));
+                }
+                else
+                {
+                    contentMap.Add(entry.Key, new TextClipboardContent(entry.Value, entry.Key));
+                }
+            }
+            contents.ContentMap = contentMap;
+            return contents;
+        }
+
         public static async Task<ClipboardItem> New(DataPackageView data)
         {
             var contents = new ClipboardItem();
@@ -36,7 +56,7 @@ namespace ClipExtended.Models
                     using var outputStream = fileStream.AsStreamForWrite();
                     await inputStream.CopyToAsync(outputStream);
                 }
-                contentMap.Add(StandardDataFormats.Bitmap, new ImageClipboardContent(file));
+                contentMap.Add(StandardDataFormats.Bitmap, new ImageClipboardContent(file.Path));
             }
 
             if (data.Contains(StandardDataFormats.Html))
@@ -83,6 +103,16 @@ namespace ClipExtended.Models
             {
                 _ = content.Remove();
             }
+        }
+
+        public Dictionary<string, string> ToMap()
+        {
+            var map = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, ClipboardContent> entry in ContentMap)
+            {
+                map.Add(entry.Key, entry.Value.ToString());
+            }
+            return map;
         }
     }
 }
