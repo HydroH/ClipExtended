@@ -1,4 +1,5 @@
 ﻿using ClipExtended.Models;
+using ClipExtended.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.WinUI.Helpers;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace ClipExtended.ViewModels
     {
         public readonly ObservableCollection<ClipboardItem> Items = new();
 
-        public ApplicationDataStorageHelper storageHelper = ApplicationDataStorageHelper.GetCurrent();
+        public ApplicationDataStorageHelper storageHelper = ApplicationDataStorageHelper.GetCurrent(new JsonObjectSerializer());
 
         public void Add(ClipboardItem item)
         {
@@ -55,12 +56,16 @@ namespace ClipExtended.ViewModels
 
         public async Task Load()
         {
-            var items = await storageHelper.ReadFileAsync<List<Dictionary<string, string>>>("clipboard.dat");
-            Items.Clear();
-            foreach (var item in items)
+            try
             {
-                Items.Add(ClipboardItem.New(item));
+                var items = await storageHelper.ReadFileAsync<List<Dictionary<string, string>>>("clipboard.dat");
+                Items.Clear();
+                foreach (var item in items)
+                {
+                    Items.Add(ClipboardItem.New(item));
+                }
             }
+            catch { }
         }
     }
 }
