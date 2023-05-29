@@ -26,13 +26,6 @@
                        Height="100"/>
         </DataTemplate>
 
-        <DataTemplate x:Key="HtmlItemTemplate" 
-                      x:DataType="models:ClipboardItem">
-            <WebView2 extensions:WebViewExtensions.Content="{x:Bind Text.Text}"
-                      HorizontalAlignment="Stretch"
-                      Height="150"/>
-        </DataTemplate>
-
         <DataTemplate x:Key="ImageItemTemplate" 
                       x:DataType="models:ClipboardItem">
             <Image Source="{x:Bind Image.Path}"
@@ -41,7 +34,6 @@
 
         <local:ClipboardTemplateSelector x:Key="ClipboardTemplateSelector"
                                          Text="{StaticResource TextItemTemplate}"
-                                         Html="{StaticResource HtmlItemTemplate}"
                                          Image="{StaticResource ImageItemTemplate}"/>
 
     </UserControl.Resources>
