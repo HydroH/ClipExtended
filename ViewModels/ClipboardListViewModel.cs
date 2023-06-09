@@ -51,14 +51,14 @@ namespace ClipExtended.ViewModels
             {
                 items.Add(item.ToMap());
             }
-            await storageHelper.CreateFileAsync("clipboard.dat", items);
+            await storageHelper.CreateFileAsync("clipboard.json", items);
         }
 
         public async Task Load()
         {
             try
             {
-                var items = await storageHelper.ReadFileAsync<List<Dictionary<string, string>>>("clipboard.dat");
+                var items = await storageHelper.ReadFileAsync<List<Dictionary<string, string>>>("clipboard.json");
                 Items.Clear();
                 foreach (var item in items)
                 {

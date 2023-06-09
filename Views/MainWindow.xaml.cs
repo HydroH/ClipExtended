@@ -83,7 +83,12 @@ namespace ClipExtended.Views
         private async void OnClosed(object sender, WindowEventArgs args)
         {
             await ViewModel.Save();
-            PInvoke.UnregisterHotKey(new HWND(this.GetWindowHandle()), 1);
+            try
+            {
+                PInvoke.UnregisterHotKey(new HWND(this.GetWindowHandle()), 1);
+            }
+            catch { }
+            
             TrayIcon.Dispose();
         }
 

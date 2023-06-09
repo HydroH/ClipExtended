@@ -48,7 +48,8 @@ namespace ClipExtended.Models
             if (data.Contains(StandardDataFormats.Bitmap))
             {
                 var stream = await data.GetBitmapAsync();
-                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("test.png", CreationCollisionOption.GenerateUniqueName);
+                var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync("data", CreationCollisionOption.OpenIfExists);
+                var file = await folder.CreateFileAsync(DateTime.Now.ToString("yyyyMMddHHmmss") + ".bmp", CreationCollisionOption.GenerateUniqueName);
                 {
                     using var objectStream = await stream.OpenReadAsync();
                     using var fileStream = await file.OpenAsync(FileAccessMode.ReadWrite);
